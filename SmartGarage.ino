@@ -9,7 +9,7 @@
 
 #include "camera_pins.h"
 
-#include "door_pin.h"
+#include "accessory_pins.h"
 
 const char* MY_WIFI_SSID;
 const char* MY_WIFI_PASSWORD;
@@ -29,6 +29,9 @@ void setup() {
   initSecureVariables();
 
   pinMode (DOOR_PIN, OUTPUT);
+  digitalWrite(DOOR_PIN, HIGH);
+
+  pinMode (FLASH_PIN, OUTPUT);
   digitalWrite(DOOR_PIN, HIGH);
 
   camera_config_t config;
@@ -139,5 +142,10 @@ void setup() {
 
 
 void loop() {
-  ArduinoOTA.handle();
+  ArduinoOTA.handle(); 
+
+  //if flash is on for over 2 minutes, better turn it off
+  if(digitalRead(FLASH_PIN) == 1) {
+    
+  }
 }

@@ -7,7 +7,8 @@ const char* index_html = MULTI_LINE_STRING(
         <meta charset='utf-8'>        
         <meta name=viewport content="width=device-width, initial-scale=1, user-scalable=yes">        
         <link rel='icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABAUlEQVRYR+2WwRHDMAgE40LSTcryM2WlmxSSjB5kZA1wB8jWJ37aEreCQ2a7LX62qv79tX/ej2c6TmpjE7XAozA0gCdagTEBkKB20syeA8DM1LasMPF+ANriaD09Q1vxDwAzBVF3SffQJkQBs9/TAFZ9o1kMAyCnSyZYkBCAiHvBR0AEQgMw4r0PehAPggKIigsIAwEBsuIjhJUFF6Aq3kMsB2gwGgTMAHIxewFZc8MlAF4p/wCXZEBmg7AJvY0R81kd0N7DDHibIxCpe6Afq7LtiMZ2eBVXIKb8C9g7fSwHIw49kAl62jyg/WI9E7KeoTxgCUVPq8UpAbBt6K1bDvAFI9/EIUVF+AgAAAAASUVORK5CYII=' />
-        <title>Barry's Garage</title> 
+        <title>Barry's Garage</title>
+        <button id='flashBtn'>flash!</button>
     <style>
     body {         
        color: white; 
@@ -15,6 +16,9 @@ const char* index_html = MULTI_LINE_STRING(
        font-size: 12px;
        line-height: 1.2;   
        background-color: black;
+    }
+    button#flashBtn {
+       float: right;  
     }
     div#wrapper {
       max-width: 312px;
@@ -189,9 +193,15 @@ const char* index_html = MULTI_LINE_STRING(
           document.querySelectorAll('.default-action').forEach(function(element) {
             updateValue(element, json[element.id], false);         
         });
-        };
+        };        
         xhr.send();
     });   
+
+    document.getElementById("flashBtn").addEventListener('click', function () {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', document.location.origin + '/flash', true);
+        xhr.send();        
+    });
 
     getStatus();
     startStream();

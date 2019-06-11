@@ -31,7 +31,7 @@
 
 #include <esp_ota_ops.h> //for over the air updates
 
-#include "door_pin.h"
+#include "accessory_pins.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -596,6 +596,26 @@ static esp_err_t door_handler(httpd_req_t *req){
     return httpd_resp_send(req, json_response, strlen(json_response));
 }
 
+static esp_err_t flash_handler(httpd_req_t *req){  
+    if(!is_authorized(req)) {
+      return httpd_resp_send_401(req);
+    }  
+    //toggle the flash
+    int flash_pin_state = digitalRead(FLASH_PIN);
+    digitalWrite(FLASH_PIN, !flash_pin_state); 
+
+    static char json_response[32];
+    char * p = json_response;
+    *p++ = '{';    
+    p+=sprintf(p, "\"flash\":%u,", flash_pin_state);    
+    *p++ = '}';
+    *p++ = 0;   
+    httpd_resp_set_type(req, "application/json");
+    httpd_resp_set_hdr(req, "Content-Encoding", "application/json");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+    return httpd_resp_send(req, json_response, strlen(json_response));
+}
+
 static esp_err_t resetcounter_handler(httpd_req_t *req){ 
     if(!is_authorized(req)) {
       return httpd_resp_send_401(req);
@@ -823,6 +843,13 @@ void startCameraServer(){
         .user_ctx  = NULL
     };
 
+    httpd_uri_t flash_uri = {
+        .uri       = "/flash",
+        .method    = HTTP_GET,
+        .handler   = flash_handler,
+        .user_ctx  = NULL
+    };
+
     httpd_uri_t resetcounter_uri = {
         .uri       = "/resetcounter",
         .method    = HTTP_GET,
@@ -875,6 +902,7 @@ void startCameraServer(){
         httpd_register_uri_handler(camera_httpd, &status_uri);
         httpd_register_uri_handler(camera_httpd, &capture_uri);
         httpd_register_uri_handler(camera_httpd, &door_uri);
+        httpd_register_uri_handler(camera_httpd, &flash_uri);
         httpd_register_uri_handler(camera_httpd, &resetcounter_uri);
         httpd_register_uri_handler(camera_httpd, &restart_uri);        
     }
