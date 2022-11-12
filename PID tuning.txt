@@ -1,0 +1,26 @@
+Original guestimate tuning which works okay
+P = 180
+I = 0.125
+D = 0.03125
+
+Ziegler Nichols
+The wikipedia article method ZN (not working well)
+Ku = 180
+Tu = 26
+P = 108
+I = 8.30769
+D = 351
+
+Or using the Michigan Tech U method ZN (works better)
+Ku = 180
+Tu = 26
+P = 105.882353
+I = 13
+D = 3.25
+
+Kris's Silvia
+K = 70
+T = 92
+P = 41.18
+I = 32
+D = 11.5
